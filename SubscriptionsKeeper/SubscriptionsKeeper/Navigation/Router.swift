@@ -5,10 +5,8 @@
 //  Created by Bohdan Pokhidnia on 18.04.2026.
 //
 
-import SwiftUI
-
-@Observable
-final class Router {
-    var selectedTabItem: TabItem = .subscriptions
-    var subscriptionsPath = NavigationPath()
+protocol Router {
+    func push(_ route: any Hashable)
+    func present(_ route: any Hashable)
+    func pop()
 }

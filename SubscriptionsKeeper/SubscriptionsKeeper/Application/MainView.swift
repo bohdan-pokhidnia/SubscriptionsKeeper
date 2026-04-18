@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MainView: View {
-    @Bindable var router = Router()
+    @Bindable var router = AppRouter()
     
     var body: some View {
         TabView(selection: $router.selectedTabItem) {
@@ -17,7 +17,9 @@ struct MainView: View {
                 systemImage: "list.bullet.rectangle",
                 value: TabItem.subscriptions
             ) {
-                Color.purple
+                NavigationStack(path: $router.subscriptionsPath) {
+                    SubscriptionsView(viewModel: SubscriptionsViewModel(router: router))
+                }
             }
 
             Tab(

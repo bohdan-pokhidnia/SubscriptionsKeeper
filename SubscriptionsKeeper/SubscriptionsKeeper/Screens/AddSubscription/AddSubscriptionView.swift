@@ -16,8 +16,7 @@ struct AddSubscriptionView: View {
                 VStack(spacing: 12) {
                     ForEach(viewModel.subscriptions, id: \.identifier) { subscription in
                         subscriptionView(
-                            iconName: "",
-                            iconColor: .black,
+                            imageUrl: subscription.imageUrlString,
                             title: subscription.name,
                             action: {}
                         )
@@ -36,8 +35,7 @@ struct AddSubscriptionView: View {
 
 private extension AddSubscriptionView {
     func subscriptionView(
-        iconName: String,
-        iconColor: Color,
+        imageUrl: String,
         title: String,
         action: @escaping (() -> Void)
     ) -> some View {
@@ -45,15 +43,9 @@ private extension AddSubscriptionView {
             action()
         } label: {
             HStack(spacing: 16) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 16)
-                        .fill(iconColor)
-                        .frame(width: 60, height: 60)
-                    
-                    Image(systemName: iconName)
-                        .font(.system(size: 28))
-                        .foregroundStyle(.white)
-                }
+                RemoteImageView(stringUrl: imageUrl)
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 
                 Text(title)
                     .font(.system(size: 20, weight: .semibold))

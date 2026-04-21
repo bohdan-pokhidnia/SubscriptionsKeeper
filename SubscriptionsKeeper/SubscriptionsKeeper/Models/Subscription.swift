@@ -6,7 +6,8 @@
 //
 
 struct Subscription {
+    var imageUrlString: String { identifier.imageUrlString }
+    
     let identifier: SubscriptionIdentifier
     let name: String
-    let imageUrlString: String
 }

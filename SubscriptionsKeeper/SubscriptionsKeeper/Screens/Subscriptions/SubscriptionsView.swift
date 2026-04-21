@@ -31,7 +31,7 @@ struct SubscriptionsView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    
+                    viewModel.addSubscriptionButtonTapped()
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -130,7 +130,7 @@ private extension SubscriptionsView {
             }
             
             Button {
-                
+                viewModel.addSubscriptionButtonTapped()
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "plus")

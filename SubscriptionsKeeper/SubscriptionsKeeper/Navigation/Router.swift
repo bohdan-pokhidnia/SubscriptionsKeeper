@@ -9,4 +9,5 @@ protocol Router {
     func push(_ route: any Hashable)
     func present(_ route: any Hashable)
     func pop()
+    func dismiss()
 }

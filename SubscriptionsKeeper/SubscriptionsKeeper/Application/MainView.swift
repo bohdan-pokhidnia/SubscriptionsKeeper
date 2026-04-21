@@ -31,5 +31,11 @@ struct MainView: View {
             }
         }
         .tint(.purple)
+        .sheet(item: $router.presentedRoute) { route in
+            switch route {
+            case .addSubscription:
+                AddSubscriptionView(viewModel: AddSubscriptionViewModel())
+            }
+        }
     }
 }

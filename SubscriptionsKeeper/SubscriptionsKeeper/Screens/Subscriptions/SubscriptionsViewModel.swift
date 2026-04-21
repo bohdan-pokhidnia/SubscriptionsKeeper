@@ -10,8 +10,12 @@ import SwiftUI
 @Observable
 final class SubscriptionsViewModel {
     private let router: Router
-    
+
     init(router: Router) {
         self.router = router
+    }
+
+    func addSubscriptionButtonTapped() {
+        router.present(AppRoute.addSubscription)
     }
 }

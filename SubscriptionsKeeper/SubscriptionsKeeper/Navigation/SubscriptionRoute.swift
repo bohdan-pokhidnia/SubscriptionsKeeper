@@ -1,12 +1,12 @@
 //
-//  AppRoute.swift
+//  SubscriptionRoute.swift
 //  SubscriptionsKeeper
 //
 //  Created by Bohdan Pokhidnia on 21.04.2026.
 //
 
-enum AppRoute: Hashable, Identifiable {
-    case addSubscription
-
+enum SubscriptionRoute: Hashable, Identifiable {
     var id: Self { self }
+    
+    case addSubscription
 }

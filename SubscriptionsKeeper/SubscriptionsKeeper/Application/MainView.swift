@@ -8,17 +8,34 @@
 import SwiftUI
 
 struct MainView: View {
-    @Bindable var router = AppRouter()
-    
+    @State private var appRouter: AppRouter
+    @State private var addSubscriptionViewModel: AddSubscriptionViewModel
+
+    init() {
+        let router = AppRouter()
+        _appRouter = State(initialValue: router)
+        _addSubscriptionViewModel = State(initialValue: AddSubscriptionViewModel(
+            router: router,
+            repository: SubscriptionsRepositoryImpl()
+        ))
+    }
+
     var body: some View {
-        TabView(selection: $router.selectedTabItem) {
+        @Bindable var appRouter = appRouter
+        TabView(selection: $appRouter.selectedTabItem) {
             Tab(
                 "Subscriptions",
                 systemImage: "list.bullet.rectangle",
                 value: TabItem.subscriptions
             ) {
-                NavigationStack(path: $router.subscriptionsPath) {
-                    SubscriptionsView(viewModel: SubscriptionsViewModel(router: router))
+                NavigationStack(path: $appRouter.subscriptionsPath) {
+                    SubscriptionsView(viewModel: SubscriptionsViewModel(router: appRouter))
+                        .navigationDestination(for: SubscriptionPath.self) { route in
+                            switch route {
+                            case .newSubscription:
+                                EmptyView()
+                            }
+                        }
                 }
             }
 
@@ -31,13 +48,25 @@ struct MainView: View {
             }
         }
         .tint(.purple)
-        .sheet(item: $router.presentedRoute) { route in
+        .sheet(item: $appRouter.presentedSubscriptionRoute, onDismiss: onSheetDismiss) { route in
             switch route {
             case .addSubscription:
-                AddSubscriptionView(viewModel: AddSubscriptionViewModel(repository: SubscriptionsRepositoryImpl()))
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.large, .medium])
+                NavigationStack(path: $appRouter.sheetPath) {
+                    AddSubscriptionView(viewModel: addSubscriptionViewModel)
+                        .navigationDestination(for: SubscriptionPath.self) { route in
+                            switch route {
+                            case let .newSubscription(subscription):
+                                NewSubscriptionView(viewModel: NewSubscriptionViewModel(subscription: subscription))
+                            }
+                        }
+                }
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.large])
             }
         }
+    }
+
+    private func onSheetDismiss() {
+        appRouter.sheetPath = NavigationPath()
     }
 }

@@ -12,9 +12,14 @@ final class AppRouter: Router {
     var selectedTabItem: TabItem = .subscriptions
     var subscriptionsPath = NavigationPath()
     var calendarPath = NavigationPath()
-    var presentedRoute: AppRoute?
+    var sheetPath = NavigationPath()
+    var presentedSubscriptionRoute: SubscriptionRoute?
 
     func push(_ route: any Hashable) {
+        if presentedSubscriptionRoute != nil {
+            sheetPath.append(route)
+            return
+        }
         switch selectedTabItem {
         case .subscriptions:
             subscriptionsPath.append(route)
@@ -25,11 +30,17 @@ final class AppRouter: Router {
     }
 
     func present(_ route: any Hashable) {
-        guard let route = route as? AppRoute else { return }
-        presentedRoute = route
+        if let route = route as? SubscriptionRoute {
+            presentedSubscriptionRoute = route
+        }
     }
 
     func pop() {
+        if presentedSubscriptionRoute != nil, !sheetPath.isEmpty {
+            sheetPath.removeLast()
+            return
+        }
+        
         switch selectedTabItem {
         case .subscriptions:
             if !subscriptionsPath.isEmpty {
@@ -42,8 +53,18 @@ final class AppRouter: Router {
             }
         }
     }
+    
+    func popToRoot() {
+        switch selectedTabItem {
+        case .subscriptions:
+            subscriptionsPath = NavigationPath()
+
+        case .calendar:
+            calendarPath = NavigationPath()
+        }
+    }
 
     func dismiss() {
-        presentedRoute = nil
+        presentedSubscriptionRoute = nil
     }
 }

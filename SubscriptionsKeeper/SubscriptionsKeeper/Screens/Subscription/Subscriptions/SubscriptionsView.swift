@@ -29,10 +29,14 @@ struct SubscriptionsView: View {
             } else {
                 Section {
                     ForEach(viewModel.subscriptions) { subscription in
-                        SubscriptionView(subscription: subscription)
-                            .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
+                        Button {
+                            viewModel.subscriptionTapped(subscription)
+                        } label: {
+                            SubscriptionView(subscription: subscription)
+                        }
+                        .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
                     .onDelete { offsets in
                         viewModel.delete(at: offsets)
@@ -64,6 +68,7 @@ struct SubscriptionsView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .safeAreaPadding(.bottom, 24)
     }
 }
 

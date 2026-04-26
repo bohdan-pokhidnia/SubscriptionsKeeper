@@ -23,7 +23,7 @@ struct NewSubscriptionView: View {
             
             Section {
                 TextField("Cost", text: $viewModel.cost)
-                    .keyboardType(.namePhonePad)
+                    .keyboardType(.decimalPad)
                 
                 Picker("Subscription Currency", selection: $viewModel.subscription.currency) {
                     ForEach(Currency.allCases, id: \.self) { currency in
@@ -48,8 +48,16 @@ struct NewSubscriptionView: View {
                 Text("Billing")
             }
         }
-        .navigationTitle("New Subscription")
+        .navigationTitle(viewModel.title)
         .toolbar {
+            if viewModel.mode == .edit {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") {
+                        viewModel.cancelButtonTapped()
+                    }
+                }
+            }
+            
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save") {
                     viewModel.saveButtonTapped()
@@ -112,9 +120,11 @@ struct NewSubscriptionView: View {
                     identifier: .chatGPTPlus,
                     group: .ai,
                     name: "ChatGPT Plus",
+                    description: "",
                     cost: 20,
                     currency: .usd
-                )
+                ),
+                mode: .edit
             )
         )
     }

@@ -9,4 +9,5 @@ enum SubscriptionRoute: Hashable, Identifiable {
     var id: Self { self }
     
     case addSubscription
+    case newSubscription(_ subscription: Subscription, mode: NewSubscriptionViewModel.Mode)
 }

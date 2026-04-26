@@ -47,4 +47,8 @@ final class SubscriptionsViewModel {
             }
         }
     }
+    
+    func subscriptionTapped(_ subscription: Subscription) {
+        router.present(SubscriptionRoute.newSubscription(subscription, mode: .edit))
+    }
 }

@@ -25,12 +25,6 @@ struct MainView: View {
                 NavigationStack(path: $appRouter.subscriptionsPath) {
                     if let subscriptionsViewModel {
                         SubscriptionsView(viewModel: subscriptionsViewModel)
-                            .navigationDestination(for: SubscriptionPath.self) { route in
-                                switch route {
-                                case .newSubscription:
-                                    EmptyView()
-                                }
-                            }
                     }
                 }
             }
@@ -64,27 +58,40 @@ struct MainView: View {
         .sheet(item: $appRouter.presentedSubscriptionRoute, onDismiss: onSubscriptionSheetDismiss) { route in
             switch route {
             case .addSubscription:
-                if let vm = addSubscriptionViewModel {
+                if let viewModel = addSubscriptionViewModel {
                     NavigationStack(path: $appRouter.sheetPath) {
-                        AddSubscriptionView(viewModel: vm)
-                            .navigationDestination(for: SubscriptionPath.self) { route in
+                        AddSubscriptionView(viewModel: viewModel)
+                            .navigationDestination(for: SubscriptionRoute.self) { route in
                                 switch route {
-                                case let .newSubscription(subscription):
-                                    NewSubscriptionView(
-                                        viewModel: NewSubscriptionViewModel(
-                                            repository: subscriptionsRepository,
-                                            router: appRouter,
-                                            subscription: subscription
-                                        )
-                                    )
+                                case .addSubscription:
+                                    Color.pink
+                                    
+                                case let .newSubscription(subscription, mode):
+                                    newSubscriptionView(subscription: subscription, mode: mode)
                                 }
                             }
                     }
                     .presentationDragIndicator(.visible)
                     .presentationDetents([.large])
                 }
+                
+            case let .newSubscription(subscription, mode):
+                NavigationStack {
+                    newSubscriptionView(subscription: subscription, mode: mode)
+                }
             }
         }
+    }
+    
+    private func newSubscriptionView(subscription: Subscription, mode: NewSubscriptionViewModel.Mode) -> some View {
+        NewSubscriptionView(
+            viewModel: NewSubscriptionViewModel(
+                repository: subscriptionsRepository,
+                router: appRouter,
+                subscription: subscription,
+                mode: mode
+            )
+        )
     }
 
     private func onSubscriptionSheetDismiss() {

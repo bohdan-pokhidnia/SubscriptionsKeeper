@@ -71,8 +71,6 @@ struct MainView: View {
                                 }
                             }
                     }
-                    .presentationDragIndicator(.visible)
-                    .presentationDetents([.large])
                 }
                 
             case let .newSubscription(subscription, mode):
@@ -95,6 +93,8 @@ struct MainView: View {
                 NavigationStack {
                     SettingsView(viewModel: SettingsViewModel(router: appRouter))
                 }
+                .presentationDragIndicator(.visible)
+                .presentationDetents([.large, .medium])
             }
         }
         .fullScreenCover(item: $appRouter.fullScreenPresentedRoute, onDismiss: onSheetDismiss) { route in

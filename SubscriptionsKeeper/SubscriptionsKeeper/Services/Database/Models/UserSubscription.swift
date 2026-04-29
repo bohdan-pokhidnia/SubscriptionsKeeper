@@ -83,6 +83,7 @@ extension UserSubscription: DatabaseRecord {
 
     func update(from model: Subscription) {
         name = model.name
+        subscriptionDescription = model.description
         cost = model.cost
         currencyRawValue = model.currency.rawValue
         paymentCycleRawValue = model.paymentCycle.rawValue

@@ -12,16 +12,12 @@ final class SubscriptionDetailsViewModel {
     var isActive: Bool { true }
 
     var perPaymentFormatted: String {
-        subscription.cost.formatted(currency: subscription.currency)
-        + " " + subscription.currency.abbreviation
+        subscription.cost.formatted(currency: subscription.currency) + " " + subscription.currency.abbreviation
     }
 
     var yearlyCostFormatted: String {
-        let yearly = subscription.paymentCycle == .monthly
-            ? subscription.cost * 12
-            : subscription.cost
-        return yearly.formatted(currency: subscription.currency)
-            + " " + subscription.currency.abbreviation
+        let yearly = subscription.paymentCycle == .monthly ? subscription.cost * 12 : subscription.cost
+        return yearly.formatted(currency: subscription.currency) + " " + subscription.currency.abbreviation
     }
 
     var nextPaymentDateFormatted: String {
@@ -42,8 +38,19 @@ final class SubscriptionDetailsViewModel {
     func closeButtonTapped() {
         router.dismiss()
     }
+    
+    func editButtonTapped() {
+        router.dismiss()
+        router.present(.newSubscription(subscription, mode: .edit))
+    }
+    
+    func removeButtonTapped() {
+        
+    }
+}
 
-    private func nextPaymentDate() -> Date {
+private extension SubscriptionDetailsViewModel {
+    func nextPaymentDate() -> Date {
         let calendar = Calendar.current
         let now = Date.now
         var next = subscription.firstPaymentAt

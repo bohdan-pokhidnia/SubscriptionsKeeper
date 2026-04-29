@@ -10,6 +10,14 @@ import SwiftUI
 struct SubscriptionView: View {
     let subscription: Subscription
 
+    private var subtitle: String {
+        let cycleAndCurrency = "\(subscription.paymentCycle.displayName) • \(subscription.currency.abbreviation)"
+        guard !subscription.description.isEmpty else {
+            return cycleAndCurrency
+        }
+        return "\(subscription.description) • \(cycleAndCurrency)"
+    }
+    
     var body: some View {
         HStack(spacing: 12) {
             RemoteImageView(stringUrl: subscription.imageUrlString)
@@ -22,7 +30,7 @@ struct SubscriptionView: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(.primary)
 
-                Text("\(subscription.paymentCycle.displayName) • \(subscription.currency.abbreviation)")
+                Text(subtitle)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }

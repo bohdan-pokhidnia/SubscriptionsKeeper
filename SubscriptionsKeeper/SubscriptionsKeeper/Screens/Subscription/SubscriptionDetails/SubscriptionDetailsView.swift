@@ -42,13 +42,13 @@ struct SubscriptionDetailsView: View {
 
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button {
-
+                    viewModel.editButtonTapped()
                 } label: {
                     Image(systemName: "pencil")
                 }
 
                 Button {
-
+                    viewModel.removeButtonTapped()
                 } label: {
                     Image(systemName: "trash")
                 }

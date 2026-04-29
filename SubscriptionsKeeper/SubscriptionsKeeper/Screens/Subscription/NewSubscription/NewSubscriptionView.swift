@@ -102,7 +102,8 @@ struct NewSubscriptionView: View {
                         .foregroundStyle(.white.opacity(0.8))
                 }
             }
-            .padding(16)
+            .padding([.top, .horizontal], 24)
+            .padding(.bottom, 16)
         }
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)

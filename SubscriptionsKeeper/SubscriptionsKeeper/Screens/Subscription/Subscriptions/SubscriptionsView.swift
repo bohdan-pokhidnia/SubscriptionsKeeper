@@ -59,7 +59,7 @@ struct SubscriptionsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    
+                    viewModel.settingsButtonTapped()
                 } label: {
                     Image(systemName: "gear")
                 }

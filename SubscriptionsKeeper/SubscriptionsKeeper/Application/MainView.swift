@@ -66,7 +66,7 @@ struct MainView: View {
                                 case let .newSubscription(subscription, mode):
                                     newSubscriptionView(subscription: subscription, mode: mode)
                                     
-                                case .addSubscription, .details:
+                                case .addSubscription, .details, .settings:
                                     EmptyView()
                                 }
                             }
@@ -90,6 +90,11 @@ struct MainView: View {
                         )
                     )
                 }
+                
+            case .settings:
+                NavigationStack {
+                    SettingsView(viewModel: SettingsViewModel(router: appRouter))
+                }
             }
         }
         .fullScreenCover(item: $appRouter.fullScreenPresentedRoute, onDismiss: onSheetDismiss) { route in
@@ -105,7 +110,7 @@ struct MainView: View {
                     )
                 }
                 
-            case .addSubscription, .newSubscription:
+            case .addSubscription, .newSubscription, .settings:
                 EmptyView()
             }
         }

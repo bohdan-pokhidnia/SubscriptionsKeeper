@@ -24,23 +24,27 @@ struct ContentFieldView<Value: View>: View {
     let icon: String
     var iconColor: Color = .secondary
     let label: String
+    var labelColor: Color = .primary
     @ViewBuilder let value: () -> Value
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(alignment: .center, spacing: 12) {
             Image(systemName: icon)
                 .foregroundStyle(iconColor)
                 .frame(width: 24, height: 24)
-
+            
             Text(label)
                 .font(.subheadline)
-                .foregroundStyle(.primary)
-
+                .foregroundStyle(labelColor)
+                .layoutPriority(1)
+            
             Spacer()
-
+            
             value()
                 .foregroundStyle(.primary)
                 .multilineTextAlignment(.trailing)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)

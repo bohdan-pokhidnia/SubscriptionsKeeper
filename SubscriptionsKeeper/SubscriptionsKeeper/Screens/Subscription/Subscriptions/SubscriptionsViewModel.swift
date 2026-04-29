@@ -32,6 +32,10 @@ final class SubscriptionsViewModel {
             print("[dev] Error fetching subscriptions: \(error)")
         }
     }
+    
+    func settingsButtonTapped() {
+        router.present(.settings)
+    }
 
     func addSubscriptionButtonTapped() {
         router.present(PresentationRoute.addSubscription)

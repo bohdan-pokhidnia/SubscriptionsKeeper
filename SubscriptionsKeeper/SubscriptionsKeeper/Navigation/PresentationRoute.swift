@@ -11,4 +11,5 @@ enum PresentationRoute: Hashable, Identifiable {
     case addSubscription
     case newSubscription(_ subscription: Subscription, mode: NewSubscriptionViewModel.Mode)
     case details(subscription: Subscription)
+    case settings
 }

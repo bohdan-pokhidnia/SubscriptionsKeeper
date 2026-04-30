@@ -208,7 +208,8 @@ private extension SubscriptionsView {
     NavigationStack {
         SubscriptionsView(
             viewModel: SubscriptionsViewModel(
-                repository: try! SubscriptionsRepositoryImpl(),
+                subscriptionsRepository: try! SubscriptionsRepositoryImpl(),
+                userRepository: UserRepositoryImpl(),
                 router: AppRouter()
             )
         )

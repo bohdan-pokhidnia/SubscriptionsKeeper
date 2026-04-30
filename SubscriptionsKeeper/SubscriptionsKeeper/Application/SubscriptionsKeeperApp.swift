@@ -10,10 +10,12 @@ import SwiftUI
 @main
 struct SubscriptionsKeeperApp: App {
     @State private var subscriptionsRepository: SubscriptionsRepositoryImpl
+    @State private var userRepository: UserRepositoryImpl
 
     init() {
         do throws(DatabaseError) {
             _subscriptionsRepository = State(initialValue: try SubscriptionsRepositoryImpl())
+            _userRepository = State(initialValue: UserRepositoryImpl())
         } catch {
             fatalError("Failed to initialize database: \(error)")
         }
@@ -23,6 +25,7 @@ struct SubscriptionsKeeperApp: App {
         WindowGroup {
             MainView()
                 .environment(subscriptionsRepository)
+                .environment(userRepository)
         }
     }
 }

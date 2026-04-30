@@ -9,15 +9,21 @@ import SwiftUI
 
 @Observable
 final class SubscriptionsViewModel {
-    private let repository: SubscriptionsRepository
+    private let subscriptionsRepository: SubscriptionsRepository
+    private let userRepository: UserRepository
     private let router: Router
     
     private(set) var subscriptions: [Subscription] = []
     var showDeleteAlert = false
     var removedSubscription: Subscription?
 
-    init(repository: SubscriptionsRepository, router: Router) {
-        self.repository = repository
+    init(
+        subscriptionsRepository: SubscriptionsRepository,
+        userRepository: UserRepository,
+        router: Router
+    ) {
+        self.subscriptionsRepository = subscriptionsRepository
+        self.userRepository = userRepository
         self.router = router
     }
     
@@ -27,7 +33,7 @@ final class SubscriptionsViewModel {
     
     func fetchSubscriptions() {
         do throws(DatabaseError) {
-            subscriptions = try repository.fetchAll()
+            subscriptions = try subscriptionsRepository.fetchAll()
         } catch {
             print("[dev] Error fetching subscriptions: \(error)")
         }
@@ -50,7 +56,7 @@ final class SubscriptionsViewModel {
     func deleteConfirmed() {
         guard let subscription = removedSubscription else { return }
         do throws(DatabaseError) {
-            try repository.delete(id: subscription.id)
+            try subscriptionsRepository.delete(id: subscription.id)
             subscriptions.removeAll { $0.id == subscription.id }
         } catch {
             print("[dev] Error deleting subscription: \(error)")

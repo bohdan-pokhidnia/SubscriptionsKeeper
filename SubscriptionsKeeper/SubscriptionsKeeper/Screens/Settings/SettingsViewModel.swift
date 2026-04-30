@@ -9,10 +9,11 @@ import SwiftUI
 
 @Observable
 final class SettingsViewModel {
-    var currency: Currency = Currency.allCases.first ?? .usd
+    var userRepository: UserRepository
     private let router: Router
     
-    init(router: Router) {
+    init(userRepository: UserRepository, router: Router) {
+        self.userRepository = userRepository
         self.router = router
     }
     

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MainView: View {
     @Environment(SubscriptionsRepositoryImpl.self) private var subscriptionsRepository
+    @Environment(UserRepositoryImpl.self) private var userRepository
+    
     @Bindable private var appRouter = AppRouter()
     @State private var subscriptionsViewModel: SubscriptionsViewModel?
     @State private var addSubscriptionViewModel: AddSubscriptionViewModel?
@@ -48,7 +50,11 @@ struct MainView: View {
         .tint(.purple)
         .task {
             if subscriptionsViewModel == nil {
-                subscriptionsViewModel = SubscriptionsViewModel(repository: subscriptionsRepository, router: appRouter)
+                subscriptionsViewModel = SubscriptionsViewModel(
+                    subscriptionsRepository: subscriptionsRepository,
+                    userRepository: userRepository,
+                    router: appRouter
+                )
             }
             
             if addSubscriptionViewModel == nil {
@@ -91,7 +97,12 @@ struct MainView: View {
                 
             case .settings:
                 NavigationStack {
-                    SettingsView(viewModel: SettingsViewModel(router: appRouter))
+                    SettingsView(
+                        viewModel: SettingsViewModel(
+                            userRepository: userRepository,
+                            router: appRouter
+                        )
+                    )
                 }
                 .presentationDragIndicator(.visible)
                 .presentationDetents([.large, .medium])

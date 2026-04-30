@@ -22,7 +22,10 @@ struct SettingsView: View {
                         iconColor: .black,
                         label: "Main Currency"
                     ) {
-                        Picker("Subscription Currency", selection: $viewModel.currency) {
+                        Picker(
+                            "Subscription Currency",
+                            selection: $viewModel.userRepository.currentCurrency
+                        ) {
                             ForEach(Currency.allCases, id: \.self) { currency in
                                 Text("\(currency.name) (\(currency.abbreviation))")
                                     .tag(currency)
@@ -93,7 +96,10 @@ struct SettingsView: View {
 #Preview {
     NavigationStack {
         SettingsView(
-            viewModel: SettingsViewModel(router: AppRouter())
+            viewModel: SettingsViewModel(
+                userRepository: UserRepositoryImpl(),
+                router: AppRouter()
+            )
         )
     }
 }

@@ -102,14 +102,14 @@ private extension SubscriptionsView {
                     .font(.system(size: 16, weight: .bold))
                     .foregroundStyle(.white.opacity(0.9))
 
-                Text("€0,00")
+                Text(viewModel.monthlyAverage)
                     .font(.system(size: 58, weight: .bold))
                     .foregroundStyle(.white)
 
                 HStack(spacing: 12) {
-                    statBadge(title: "YEARLY", value: "€0,00")
+                    statBadge(title: "YEARLY", value: viewModel.yearly)
                     statBadge(title: "THIS MONTH", value: "€0,00")
-                    statBadge(title: "SUBS.", value: "0")
+                    statBadge(title: "SUBS.", value: viewModel.subscriptionsCount)
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)

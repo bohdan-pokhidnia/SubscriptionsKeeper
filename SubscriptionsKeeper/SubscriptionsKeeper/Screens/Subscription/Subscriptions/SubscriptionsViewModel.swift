@@ -9,13 +9,39 @@ import SwiftUI
 
 @Observable
 final class SubscriptionsViewModel {
-    private let subscriptionsRepository: SubscriptionsRepository
-    private let userRepository: UserRepository
-    private let router: Router
+    var monthlyAverage: String {
+        allSubscriptionsCost.formatted(currency: currency)
+    }
+    
+    var yearly: String {
+        let cost = allSubscriptionsCost * 12
+        return cost.formatted(currency: currency)
+    }
+    
+    var subscriptionsCount: String {
+        subscriptions.count.description
+    }
+    
+    private var allSubscriptionsCost: Double {
+        let average: Double = subscriptions
+            .filter({ $0.currency == currency })
+            .reduce(0.0) { partialResult, subscription in
+                partialResult + subscription.cost
+            }
+        return average
+    }
+    
+    private var currency: Currency {
+        userRepository.currentCurrency
+    }
     
     private(set) var subscriptions: [Subscription] = []
     var showDeleteAlert = false
     var removedSubscription: Subscription?
+    
+    private let subscriptionsRepository: SubscriptionsRepository
+    private let userRepository: UserRepository
+    private let router: Router
 
     init(
         subscriptionsRepository: SubscriptionsRepository,

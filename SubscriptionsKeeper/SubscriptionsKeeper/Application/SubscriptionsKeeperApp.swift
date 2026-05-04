@@ -20,7 +20,7 @@ struct SubscriptionsKeeperApp: App {
             
             _userRepository = State(initialValue: userRepository)
             _rateRepository = State(initialValue: rateRepository)
-            _subscriptionsRepository = State(initialValue: try SubscriptionsRepositoryImpl(userRepository: userRepository, rateRepository: rateRepository))
+            _subscriptionsRepository = State(initialValue: try SubscriptionsRepositoryImpl())
         } catch {
             fatalError("Failed to initialize database: \(error)")
         }

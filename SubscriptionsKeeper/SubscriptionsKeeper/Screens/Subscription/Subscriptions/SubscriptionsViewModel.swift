@@ -40,19 +40,19 @@ final class SubscriptionsViewModel {
     var removedSubscription: Subscription?
 
     private let subscriptionsRepository: SubscriptionsRepository
+    private let fetchDashboardSubscriptions: FetchDashboardSubscriptionsUseCase
     private let userRepository: UserRepository
-    private let rateRepository: RateRepository
     private let router: Router
 
     init(
         subscriptionsRepository: SubscriptionsRepository,
+        fetchDashboardSubscriptions: FetchDashboardSubscriptionsUseCase,
         userRepository: UserRepository,
-        rateRepository: RateRepository,
         router: Router
     ) {
         self.subscriptionsRepository = subscriptionsRepository
+        self.fetchDashboardSubscriptions = fetchDashboardSubscriptions
         self.userRepository = userRepository
-        self.rateRepository = rateRepository
         self.router = router
     }
     
@@ -62,7 +62,7 @@ final class SubscriptionsViewModel {
     
     func fetchSubscriptions() async {
         do throws(DatabaseError) {
-            subscriptions = try await subscriptionsRepository.fetchAll()
+            subscriptions = try await fetchDashboardSubscriptions.execute()
         } catch {
             print("[dev] Error fetching subscriptions: \(error)")
         }

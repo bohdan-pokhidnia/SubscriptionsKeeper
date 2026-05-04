@@ -36,13 +36,20 @@ final class RateRepositoryImpl: RateRepository {
         if let cached = cachedRates[baseCurrency] {
             return cached
         }
-
-        let rates: [Rate] = switch baseCurrency {
-        case .uah:
-            try await nbuAPI.fetchRate(baseCurrency: baseCurrency)
+        
+        var rates: [Rate] = []
+        let nbuRates: [Rate] = try await nbuAPI.fetchRate(baseCurrency: baseCurrency)
+        
+        if baseCurrency == .uah {
+            rates = nbuRates.map {
+                Rate(baseCurrency: $0.baseCurrency, currency: $0.currency, amount: 1.0 / $0.amount)
+            }
+        } else {
+            rates = try await frankfurterApi.fetchRate(baseCurrency: baseCurrency)
             
-        default:
-            try await frankfurterApi.fetchRate(baseCurrency: baseCurrency)
+            if let uahRate = nbuRates.first(where: { $0.currency == baseCurrency }) {
+                rates.append(Rate(baseCurrency: baseCurrency, currency: .uah, amount: uahRate.amount))
+            }
         }
 
         cachedRates[baseCurrency] = rates

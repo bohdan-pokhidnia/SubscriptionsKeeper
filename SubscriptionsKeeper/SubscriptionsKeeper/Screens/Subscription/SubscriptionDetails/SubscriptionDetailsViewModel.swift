@@ -33,22 +33,17 @@ final class SubscriptionDetailsViewModel {
 
     private let subscriptionsRepository: SubscriptionsRepository
     private let userRepository: UserRepository
-    private let rateRepository: RateRepository
     let router: Router
     let subscription: Subscription
-    
-    private var rate: Rate?
 
     init(
         subscriptionsRepository: SubscriptionsRepository,
         userRepository: UserRepository,
-        rateRepository: RateRepository,
         router: Router,
         subscription: Subscription
     ) {
         self.subscriptionsRepository = subscriptionsRepository
         self.userRepository = userRepository
-        self.rateRepository = rateRepository
         self.router = router
         self.subscription = subscription
     }

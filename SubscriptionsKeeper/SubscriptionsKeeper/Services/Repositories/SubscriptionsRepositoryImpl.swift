@@ -10,8 +10,8 @@ import Foundation
 protocol SubscriptionsRepository {
     func fetchAvailableSubscriptions() -> [Subscription]
     func fetchGroupedSubscriptions() -> [SubscriptionSection]
-    
-    func fetchAll() async throws(DatabaseError) -> [Subscription]
+
+    func fetchAll() throws(DatabaseError) -> [Subscription]
     func add(subscription: Subscription, id: UUID) throws(DatabaseError)
     func update(id: UUID, with subscription: Subscription) throws(DatabaseError)
     func delete(id: UUID) throws(DatabaseError)
@@ -20,13 +20,9 @@ protocol SubscriptionsRepository {
 @Observable
 final class SubscriptionsRepositoryImpl: SubscriptionsRepository {
     private let database: DatabaseServiceImpl<UserSubscription>
-    private let userRepository: UserRepository
-    private let rateRepository: RateRepository
-    
-    init(userRepository: UserRepository, rateRepository: RateRepository) throws(DatabaseError) {
+
+    init() throws(DatabaseError) {
         database = try DatabaseServiceImpl<UserSubscription>()
-        self.userRepository = userRepository
-        self.rateRepository = rateRepository
     }
     
     func fetchAvailableSubscriptions() -> [Subscription] {
@@ -185,36 +181,8 @@ final class SubscriptionsRepositoryImpl: SubscriptionsRepository {
         }
     }
     
-    func fetchAll() async throws(DatabaseError) -> [Subscription] {
-        do {
-            var subscriptions = try database.fetchAll()
-            let targetCurrency = userRepository.currentCurrency
-
-            let foreignCurrencies = Set(
-                subscriptions
-                    .map(\.currency)
-                    .filter { $0 != targetCurrency }
-            )
-
-            var ratesByCurrency: [Currency: Double] = [:]
-            
-            for currency in foreignCurrencies {
-                let rates = try await rateRepository.fetchRate(baseCurrency: currency)
-                if let rate = rates.first(where: { $0.currency == targetCurrency }) {
-                    ratesByCurrency[currency] = rate.amount
-                }
-            }
-
-            for index in subscriptions.indices {
-                guard let rateAmount = ratesByCurrency[subscriptions[index].currency] else { continue }
-                subscriptions[index].dashboardCost = subscriptions[index].cost / rateAmount
-                subscriptions[index].dashboardCurrency = targetCurrency
-            }
-
-            return subscriptions
-        } catch {
-            throw .fetchFailed(error)
-        }
+    func fetchAll() throws(DatabaseError) -> [Subscription] {
+        try database.fetchAll()
     }
 
     func add(subscription: Subscription, id: UUID) throws(DatabaseError) {

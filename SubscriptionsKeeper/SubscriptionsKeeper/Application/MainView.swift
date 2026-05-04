@@ -37,7 +37,9 @@ struct MainView: View {
                 systemImage: "calendar",
                 value: TabItem.calendar
             ) {
-                Color.green
+                NavigationStack {
+                    CalendarView(viewModel: CalendarViewModel())
+                }
             }
             
             Tab(
@@ -53,10 +55,15 @@ struct MainView: View {
             try? await rateRepository.setup(currency: userRepository.currentCurrency)
             
             if subscriptionsViewModel == nil {
-                subscriptionsViewModel = SubscriptionsViewModel(
+                let fetchDashboardSubscriptions = FetchDashboardSubscriptionsUseCaseImpl(
                     subscriptionsRepository: subscriptionsRepository,
                     userRepository: userRepository,
-                    rateRepository: rateRepository,
+                    rateRepository: rateRepository
+                )
+                subscriptionsViewModel = SubscriptionsViewModel(
+                    subscriptionsRepository: subscriptionsRepository,
+                    fetchDashboardSubscriptions: fetchDashboardSubscriptions,
+                    userRepository: userRepository,
                     router: appRouter
                 )
             }
@@ -94,7 +101,6 @@ struct MainView: View {
                         viewModel: SubscriptionDetailsViewModel(
                             subscriptionsRepository: subscriptionsRepository,
                             userRepository: userRepository,
-                            rateRepository: rateRepository,
                             router: appRouter,
                             subscription: subscription
                         )
@@ -122,7 +128,6 @@ struct MainView: View {
                         viewModel: SubscriptionDetailsViewModel(
                             subscriptionsRepository: subscriptionsRepository,
                             userRepository: userRepository,
-                            rateRepository: rateRepository,
                             router: appRouter,
                             subscription: subscription
                         )

@@ -175,12 +175,8 @@ struct SubscriptionDetailsView: View {
     NavigationStack {
         SubscriptionDetailsView(
             viewModel: SubscriptionDetailsViewModel(
-                subscriptionsRepository: try! SubscriptionsRepositoryImpl(
-                    userRepository: UserRepositoryImpl(),
-                    rateRepository: RateRepositoryImpl()
-                ),
+                subscriptionsRepository: try! SubscriptionsRepositoryImpl(),
                 userRepository: UserRepositoryImpl(),
-                rateRepository: RateRepositoryImpl(),
                 router: AppRouter(),
                 subscription: .preview(
                     identifier: .iCloudPlus,

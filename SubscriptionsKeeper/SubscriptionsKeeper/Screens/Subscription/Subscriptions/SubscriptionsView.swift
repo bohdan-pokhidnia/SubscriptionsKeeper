@@ -209,12 +209,13 @@ private extension SubscriptionsView {
     NavigationStack {
         SubscriptionsView(
             viewModel: SubscriptionsViewModel(
-                subscriptionsRepository: try! SubscriptionsRepositoryImpl(
+                subscriptionsRepository: try! SubscriptionsRepositoryImpl(),
+                fetchDashboardSubscriptions: FetchDashboardSubscriptionsUseCaseImpl(
+                    subscriptionsRepository: try! SubscriptionsRepositoryImpl(),
                     userRepository: UserRepositoryImpl(),
                     rateRepository: RateRepositoryImpl()
                 ),
                 userRepository: UserRepositoryImpl(),
-                rateRepository: RateRepositoryImpl(),
                 router: AppRouter()
             )
         )

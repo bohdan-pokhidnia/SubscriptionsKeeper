@@ -114,10 +114,7 @@ struct NewSubscriptionView: View {
     NavigationStack {
         NewSubscriptionView(
             viewModel: NewSubscriptionViewModel(
-                repository: try! SubscriptionsRepositoryImpl(
-                    userRepository: UserRepositoryImpl(),
-                    rateRepository: RateRepositoryImpl()
-                ),
+                repository: try! SubscriptionsRepositoryImpl(),
                 router: AppRouter(),
                 subscription: Subscription(
                     id: UUID(),

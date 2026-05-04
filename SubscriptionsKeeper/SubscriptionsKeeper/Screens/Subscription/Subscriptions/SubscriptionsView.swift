@@ -88,9 +88,10 @@ private extension SubscriptionsView {
             RoundedRectangle(cornerRadius: 24)
                 .fill(
                     LinearGradient(
-                        colors: [
-                            Color(red: 0.88, green: 0.47, blue: 0.95),
-                            Color(red: 0.98, green: 0.60, blue: 0.55)
+                        stops: [
+                            .init(color: Color(red: 0.82, green: 0.22, blue: 0.88), location: 0.0),
+                            .init(color: Color(red: 0.94, green: 0.42, blue: 0.63), location: 0.5),
+                            .init(color: Color(red: 0.90, green: 0.56, blue: 0.20), location: 1.0)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing

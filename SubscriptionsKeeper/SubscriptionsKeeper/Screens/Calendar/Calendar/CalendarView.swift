@@ -11,24 +11,19 @@ struct CalendarView: View {
     @Bindable var viewModel: CalendarViewModel
     
     var body: some View {
-        ZStack {
-            Color(.systemGroupedBackground)
-                .ignoresSafeArea()
+        VStack(spacing: 16) {
+            remainingView
             
-            VStack(spacing: 16) {
-                remainingView
-                
-                RoundedRectangle(cornerRadius: 24)
-                    .fill(Color.white)
-                    .shadow(color: .black.opacity(0.08), radius: 8, y: 2)
-            }
-            .padding(.horizontal, 16)
+            calendarView
         }
+        .padding([.horizontal, .bottom], 16)
         .navigationTitle("Calendar")
         .navigationBarTitleDisplayMode(.inline)
     }
-    
-    private var remainingView: some View {
+}
+
+private extension CalendarView {
+    var remainingView: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 24)
                 .fill(
@@ -83,6 +78,128 @@ struct CalendarView: View {
             .padding(16)
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    var calendarView: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 24)
+                .fill(Color.white)
+                .shadow(color: .black.opacity(0.08), radius: 8, y: 2)
+            
+            VStack(spacing: 8) {
+                calendarHeaderView
+                
+                calendarGridView
+            }
+            .padding(16)
+        }
+    }
+    
+    var calendarHeaderView: some View {
+        HStack(spacing: 0) {
+            Button {
+                viewModel.goToPreviousMonth()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .fontWeight(.bold)
+                    .foregroundStyle(.black)
+                    .frame(width: 44, height: 44)
+                    .background(Color(.systemGray5))
+                    .clipShape(Circle())
+            }
+
+            Spacer()
+
+            VStack(spacing: 4) {
+                Text(viewModel.monthTitle)
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Text(viewModel.yearTitle)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            Button {
+                viewModel.goToNextMonth()
+            } label: {
+                Image(systemName: "chevron.right")
+                    .fontWeight(.bold)
+                    .foregroundStyle(.black)
+                    .frame(width: 44, height: 44)
+                    .background(Color(.systemGray5))
+                    .clipShape(Circle())
+            }
+        }
+    }
+    
+    var calendarGridView: some View {
+        let days = viewModel.daysInMonth
+        let offset = viewModel.firstWeekdayOffset
+        let totalSlots = offset + days.count
+        let rows = (totalSlots + 6) / 7
+
+        return Grid(alignment: .top, horizontalSpacing: 6, verticalSpacing: 8) {
+            // Weekday headers
+            GridRow {
+                ForEach(viewModel.weekdaySymbols.indices, id: \.self) { index in
+                    Text(viewModel.weekdaySymbols[index])
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+
+            // Day rows
+            ForEach(0..<rows, id: \.self) { row in
+                GridRow {
+                    ForEach(0..<7, id: \.self) { column in
+                        let index = row * 7 + column
+                        let dayNumber = index - offset + 1
+
+                        if dayNumber >= 1 && dayNumber <= days.count {
+                            calendarDayView(day: dayNumber)
+                        } else {
+                            Color.clear
+                                .frame(maxWidth: .infinity, minHeight: 50)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func calendarDayView(day: Int) -> some View {
+        let isToday = viewModel.isToday(day: day)
+        let daySubscriptions = viewModel.subscriptionsForDay(day)
+
+        return VStack(spacing: 4) {
+            Text(day.description)
+                .font(.body)
+                .fontWeight(.medium)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, 8)
+                .padding(.top, 6)
+
+            if let first = daySubscriptions.first {
+                RemoteImageView(stringUrl: first.imageUrlString)
+                    .scaledToFit()
+                    .frame(width: 28, height: 28)
+                    .clipShape(RoundedRectangle(cornerRadius: 7))
+            }
+
+            Spacer(minLength: 0)
+        }
+        .frame(maxWidth: .infinity, minHeight: 50)
+        .background(Color(.systemGray6))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(isToday ? Color.purple.opacity(0.6) : Color.clear, lineWidth: 2)
+        )
     }
 }
 

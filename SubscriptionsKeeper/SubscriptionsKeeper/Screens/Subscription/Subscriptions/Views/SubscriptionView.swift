@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SubscriptionView: View {
     let subscription: Subscription
+    let date: String
 
     private var subtitle: String {
         let cycleAndCurrency = "\(subscription.paymentCycle.displayName) • \(subscription.currency.abbreviation)"
@@ -52,7 +53,7 @@ struct SubscriptionView: View {
                         .foregroundStyle(.primary)
                 }
 
-                Text(subscription.firstPaymentAt, format: .dateTime.day().month(.abbreviated))
+                Text(date)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -65,7 +66,8 @@ struct SubscriptionView: View {
 
 #Preview {
     SubscriptionView(
-        subscription: .preview()
+        subscription: .preview(),
+        date: "20 Jan"
     )
     .padding()
 }

@@ -32,7 +32,10 @@ struct SubscriptionsView: View {
                         Button {
                             viewModel.subscriptionTapped(subscription)
                         } label: {
-                            SubscriptionView(subscription: subscription)
+                            SubscriptionView(
+                                subscription: subscription,
+                                date: viewModel.nextPaymentDateString(subscription: subscription)
+                            )
                         }
                         .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                         .listRowSeparator(.hidden)

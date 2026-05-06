@@ -15,8 +15,7 @@ final class SubscriptionsViewModel {
     }
     
     var yearly: String {
-        let cost = allSubscriptionsCost * 12
-        return cost.formatted(.price(currency: currency))
+        (allSubscriptionsCost * 12).formatted(.price(currency: currency))
     }
     
     var subscriptionsCount: String {
@@ -24,11 +23,9 @@ final class SubscriptionsViewModel {
     }
     
     private var allSubscriptionsCost: Double {
-        let average: Double = subscriptions
-            .reduce(0.0) { partialResult, subscription in
-                partialResult + (subscription.dashboardCost ?? subscription.cost)
-            }
-        return average
+        subscriptions.reduce(0.0) { partialResult, subscription in
+            partialResult + (subscription.dashboardCost ?? subscription.cost)
+        }
     }
     
     private var currency: Currency {
@@ -62,7 +59,9 @@ final class SubscriptionsViewModel {
     
     func fetchSubscriptions() async {
         do throws(DatabaseError) {
-            subscriptions = try await fetchDashboardSubscriptions.execute()
+            subscriptions = try await fetchDashboardSubscriptions
+                .execute()
+                .sorted(by: { nextPaymentDate(for: $0) < nextPaymentDate(for: $1) })
         } catch {
             print("[dev] Error fetching subscriptions: \(error)")
         }
@@ -95,5 +94,34 @@ final class SubscriptionsViewModel {
     
     func subscriptionTapped(_ subscription: Subscription) {
         router.fullScreenPresent(PresentationRoute.details(subscription: subscription))
+    }
+    
+    func nextPaymentDateString(subscription: Subscription) -> String {
+        let date = nextPaymentDate(for: subscription)
+        return date.formatted(.dateTime.day().month(.abbreviated))
+    }
+}
+
+private extension SubscriptionsViewModel {
+    func nextPaymentDate(for subscription: Subscription) -> Date {
+        let calendar = Calendar.current
+        let today = Date.now
+        let paymentDay = calendar.component(.day, from: subscription.firstPaymentAt)
+
+        var components = calendar.dateComponents([.year, .month], from: today)
+        components.day = paymentDay
+
+        guard var date = calendar.date(from: components) else {
+            return .now
+        }
+
+        if date < today {
+            guard let nextMonth = calendar.date(byAdding: .month, value: 1, to: date) else {
+                return .now
+            }
+            date = nextMonth
+        }
+        
+        return date
     }
 }

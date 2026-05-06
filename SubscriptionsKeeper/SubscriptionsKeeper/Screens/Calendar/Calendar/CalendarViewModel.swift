@@ -39,6 +39,7 @@ final class CalendarViewModel {
             .min()
     }
 
+    var selectedDay: Int?
     private var today: Date = .now
     private(set) var subscriptions: [Subscription] = []
 
@@ -115,6 +116,17 @@ final class CalendarViewModel {
         return components.year == monthComponents.year
             && components.month == monthComponents.month
             && components.day == day
+    }
+
+    func selectedDayDate() -> Date? {
+        guard let selectedDay else { return nil }
+        var components = calendar.dateComponents([.year, .month], from: today)
+        components.day = selectedDay
+        return calendar.date(from: components)
+    }
+
+    func costForDay(_ day: Int) -> Double {
+        subscriptionsForDay(day).reduce(0.0) { $0 + ($1.dashboardCost ?? $1.cost) }
     }
 
     func subscriptionsForDay(_ day: Int) -> [Subscription] {

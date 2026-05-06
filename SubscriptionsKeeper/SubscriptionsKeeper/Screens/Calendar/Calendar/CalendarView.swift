@@ -12,8 +12,12 @@ struct CalendarView: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            remainingView
-            
+            if let selectedDay = viewModel.selectedDay {
+                selectedDayView(selectedDay)
+            } else {
+                remainingView
+            }
+
             calendarView
         }
         .padding([.horizontal, .bottom], 16)
@@ -75,6 +79,66 @@ private extension CalendarView {
                     }
                     
                     Spacer()
+                }
+            }
+            .foregroundStyle(.white)
+            .padding(16)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+    }
+    
+    func selectedDayView(_ day: Int) -> some View {
+        let daySubscriptions = viewModel.subscriptionsForDay(day)
+        let cost = viewModel.costForDay(day)
+
+        return ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    LinearGradient(
+                        colors: (daySubscriptions.first?.identifier)?.gradientColors ?? [],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        if let date = viewModel.selectedDayDate() {
+                            Text(date, format: .dateTime.day().month(.wide))
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+
+                        Text("\(daySubscriptions.count) subscriptions · \(cost.formatted(.price(currency: viewModel.currency)))")
+                            .font(.subheadline)
+                    }
+
+                    Spacer()
+
+                    Button {
+                        withAnimation {
+                            viewModel.selectedDay = nil
+                        }
+                    } label: {
+                        Text("Clear")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.primary)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(.white.opacity(0.4))
+                            .clipShape(Capsule())
+                    }
+                }
+
+                HStack(spacing: 8) {
+                    ForEach(daySubscriptions) { subscription in
+                        RemoteImageView(stringUrl: subscription.imageUrlString)
+                            .scaledToFit()
+                            .frame(width: 36, height: 36)
+                            .clipShape(RoundedRectangle(cornerRadius: 9))
+                    }
                 }
             }
             .foregroundStyle(.white)
@@ -214,6 +278,12 @@ private extension CalendarView {
             RoundedRectangle(cornerRadius: 12)
                 .stroke(isToday ? Color.purple.opacity(0.6) : Color.clear, lineWidth: 2)
         )
+        .onTapGesture {
+            guard !daySubscriptions.isEmpty else { return }
+            withAnimation {
+                viewModel.selectedDay = day
+            }
+        }
     }
 }
 

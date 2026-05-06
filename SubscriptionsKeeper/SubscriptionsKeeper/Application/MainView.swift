@@ -14,6 +14,7 @@ struct MainView: View {
 
     @Bindable private var appRouter = AppRouter()
     @State private var subscriptionsViewModel: SubscriptionsViewModel?
+    @State private var calendarViewModel: CalendarViewModel?
     @State private var addSubscriptionViewModel: AddSubscriptionViewModel?
 
     var body: some View {
@@ -38,7 +39,9 @@ struct MainView: View {
                 value: TabItem.calendar
             ) {
                 NavigationStack {
-                    CalendarView(viewModel: CalendarViewModel())
+                    if let calendarViewModel {
+                        CalendarView(viewModel: calendarViewModel)
+                    }
                 }
             }
             
@@ -54,17 +57,25 @@ struct MainView: View {
         .task {
             try? await rateRepository.setup(currency: userRepository.currentCurrency)
             
+            let fetchDashboardSubscriptions = FetchDashboardSubscriptionsUseCaseImpl(
+                subscriptionsRepository: subscriptionsRepository,
+                userRepository: userRepository,
+                rateRepository: rateRepository
+            )
+
             if subscriptionsViewModel == nil {
-                let fetchDashboardSubscriptions = FetchDashboardSubscriptionsUseCaseImpl(
-                    subscriptionsRepository: subscriptionsRepository,
-                    userRepository: userRepository,
-                    rateRepository: rateRepository
-                )
                 subscriptionsViewModel = SubscriptionsViewModel(
                     subscriptionsRepository: subscriptionsRepository,
                     fetchDashboardSubscriptions: fetchDashboardSubscriptions,
                     userRepository: userRepository,
                     router: appRouter
+                )
+            }
+
+            if calendarViewModel == nil {
+                calendarViewModel = CalendarViewModel(
+                    fetchDashboardSubscriptions: fetchDashboardSubscriptions,
+                    userRepository: userRepository
                 )
             }
             
@@ -156,6 +167,7 @@ struct MainView: View {
         
         Task {
             await subscriptionsViewModel?.fetchSubscriptions()
+            await calendarViewModel?.onAppear()
         }
     }
 }

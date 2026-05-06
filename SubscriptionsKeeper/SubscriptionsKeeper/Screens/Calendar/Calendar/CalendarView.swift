@@ -19,6 +19,9 @@ struct CalendarView: View {
         .padding([.horizontal, .bottom], 16)
         .navigationTitle("Calendar")
         .navigationBarTitleDisplayMode(.inline)
+        .task {
+            await viewModel.onAppear()
+        }
     }
 }
 
@@ -205,6 +208,15 @@ private extension CalendarView {
 
 #Preview {
     NavigationStack {
-        CalendarView(viewModel: CalendarViewModel())
+        CalendarView(
+            viewModel: CalendarViewModel(
+                fetchDashboardSubscriptions: FetchDashboardSubscriptionsUseCaseImpl(
+                    subscriptionsRepository: try! SubscriptionsRepositoryImpl(),
+                    userRepository: UserRepositoryImpl(),
+                    rateRepository: RateRepositoryImpl()
+                ),
+                userRepository: UserRepositoryImpl()
+            )
+        )
     }
 }

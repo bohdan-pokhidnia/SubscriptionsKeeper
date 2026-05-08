@@ -15,6 +15,7 @@ struct MainView: View {
     @Bindable private var appRouter = AppRouter()
     @State private var subscriptionsViewModel: SubscriptionsViewModel?
     @State private var calendarViewModel: CalendarViewModel?
+    @State private var notificationsViewModel: NotificationsViewModel?
     @State private var addSubscriptionViewModel: AddSubscriptionViewModel?
 
     var body: some View {
@@ -50,7 +51,11 @@ struct MainView: View {
                 systemImage: "bell.badge",
                 value: TabItem.notifications
             ) {
-                Color.blue
+                NavigationStack {
+                    if let notificationsViewModel {
+                        NotificationsView(viewModel: notificationsViewModel)
+                    }
+                }
             }
         }
         .tint(.purple)
@@ -77,6 +82,10 @@ struct MainView: View {
                     fetchDashboardSubscriptions: fetchDashboardSubscriptions,
                     userRepository: userRepository
                 )
+            }
+            
+            if notificationsViewModel == nil {
+                notificationsViewModel = NotificationsViewModel(subscriptionsRepository: subscriptionsRepository)
             }
             
             if addSubscriptionViewModel == nil {

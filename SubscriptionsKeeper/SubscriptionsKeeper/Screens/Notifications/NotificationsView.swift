@@ -33,6 +33,7 @@ struct NotificationsView: View {
         NotificationsView(
             viewModel: NotificationsViewModel(
                 subscriptionsRepository: try! SubscriptionsRepositoryImpl(),
+                userRepository: UserRepositoryImpl(),
                 notificationScheduler: LocalNotificationScheduler()
             )
         )

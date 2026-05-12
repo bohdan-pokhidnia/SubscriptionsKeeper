@@ -10,14 +10,20 @@ import SwiftUI
 @Observable
 final class NotificationsViewModel {
     private let subscriptionsRepository: SubscriptionsRepository
+    private let userRepository: UserRepository
     private let notificationScheduler: NotificationScheduler
 
     private(set) var subscriptions: [Subscription] = []
     private var notificationStates: [UUID: Bool] = [:]
     private var notificationDates: [UUID: Date] = [:]
 
-    init(subscriptionsRepository: SubscriptionsRepository, notificationScheduler: NotificationScheduler) {
+    init(
+        subscriptionsRepository: SubscriptionsRepository,
+        userRepository: UserRepository,
+        notificationScheduler: NotificationScheduler
+    ) {
         self.subscriptionsRepository = subscriptionsRepository
+        self.userRepository = userRepository
         self.notificationScheduler = notificationScheduler
     }
 
@@ -104,9 +110,11 @@ private extension NotificationsViewModel {
     func scheduleNotification(for subscription: Subscription) async {
         guard let date = notificationDates[subscription.id] else { return }
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        let isTimeSensitive = userRepository.isEnableTimeSensitiveNotifications
         let content = NotificationContent(
             title: subscription.name,
-            body: "Payment is due soon"
+            body: "Payment is due soon",
+            isTimeSensitive: isTimeSensitive
         )
         let presentation = NotificationPresentation(
             identifier: subscription.id.uuidString,

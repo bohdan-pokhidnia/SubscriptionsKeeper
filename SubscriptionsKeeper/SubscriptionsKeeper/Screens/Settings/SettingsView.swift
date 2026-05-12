@@ -46,6 +46,16 @@ struct SettingsView: View {
                     }
                     
                     ContentSectionDivider()
+                    
+                    ContentFieldView(
+                        icon: "bell.and.waves.left.and.right.fill",
+                        iconColor: .black,
+                        label: "Time-sensitive notifications"
+                    ) {
+                        Toggle("", isOn: $viewModel.userRepository.isEnableTimeSensitiveNotifications)
+                            .labelsHidden()
+                            .tint(.purple)
+                    }
                 }
                 .padding(16)
                 

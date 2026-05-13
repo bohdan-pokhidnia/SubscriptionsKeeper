@@ -62,3 +62,11 @@ fastlane/screenshots/**/*.png
 fastlane/test_output
 SubscriptionsKeeper/.claude/worktrees/determined-engelbart-0de682/
 SubscriptionsKeeper/.claude/worktrees/gracious-dirac-f009b2/
+*.md
+*.py
+SubscriptionsKeeper/.claude/skills/cloudkit
+SubscriptionsKeeper/.claude/skills/swift-mcp-server-generator
+SubscriptionsKeeper/.claude/skills/swiftui-expert-skill
+SubscriptionsKeeper/.claude/worktrees/admiring-jackson-bc0778/
+SubscriptionsKeeper/.claude/worktrees/eloquent-cray-88656c/
+SubscriptionsKeeper/skills-lock.json

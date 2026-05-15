@@ -21,7 +21,6 @@ struct SubscriptionDetailsView: View {
                     headerView
 
                     VStack(spacing: 12) {
-                        statusSection
                         infoSection
 
                         if viewModel.showDashboardValues {
@@ -94,26 +93,6 @@ struct SubscriptionDetailsView: View {
         }
         .padding(.top, 150)
         .padding(.bottom, 50)
-    }
-
-    private var statusSection: some View {
-        ContentSectionView {
-            ContentFieldView(
-                icon: "checkmark.circle.fill",
-                iconColor: viewModel.isActive ? .green : .gray,
-                label: "Status"
-            ) {
-                Text(viewModel.isActive ? "Active" : "Inactive")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(viewModel.isActive ? .green : .secondary)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .background(
-                        Capsule()
-                            .fill(viewModel.isActive ? Color.green.opacity(0.15) : Color.secondary.opacity(0.15))
-                    )
-            }
-        }
     }
 
     private var infoSection: some View {

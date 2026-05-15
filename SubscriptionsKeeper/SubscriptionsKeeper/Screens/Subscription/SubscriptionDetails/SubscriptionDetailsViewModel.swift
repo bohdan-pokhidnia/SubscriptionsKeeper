@@ -10,7 +10,6 @@ import SwiftUI
 @Observable
 final class SubscriptionDetailsViewModel {
     var showDeleteAlert = false
-    var isActive: Bool { true }
 
     var perPaymentFormatted: String {
         subscription.cost.formatted(.price(currency: subscription.currency))

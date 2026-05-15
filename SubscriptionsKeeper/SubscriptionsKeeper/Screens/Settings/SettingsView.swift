@@ -37,17 +37,6 @@ struct SettingsView: View {
                     ContentSectionDivider()
                     
                     ContentFieldView(
-                        icon: "icloud.fill",
-                        iconColor: .black,
-                        label: "iCloud Sync"
-                    ) {
-                        Text("Active")
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    ContentSectionDivider()
-                    
-                    ContentFieldView(
                         icon: "bell.and.waves.left.and.right.fill",
                         iconColor: .black,
                         label: "Time-sensitive notifications"
@@ -88,7 +77,7 @@ struct SettingsView: View {
                         }
                     }
                 }
-                .padding(.horizontal, 16)
+                .padding([.horizontal, .bottom], 16)
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
